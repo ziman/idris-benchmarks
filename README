@@ -1,0 +1,21 @@
+== Some benchmarks
+
+Everything is in seconds.
+
+=== master
+
+ [1/2] 001-shl-bin
+ 001-shl-bin     compile 0.61 0.62 0.61 0.60 0.62 -- avg = 0.612, sd = 8.0e-3
+ 001-shl-bin run TIMEOUT TIMEOUT TIMEOUT TIMEOUT TIMEOUT -- 
+ [2/2] 002-add-bins
+ 002-add-bins    compile 2.97 2.93 2.94 2.92 2.93 -- avg = 2.938, sd = 1.9e-2
+ 002-add-bins    run     4.41 4.42 4.42 4.41 4.51 -- avg = 4.434, sd = 4.3e-2
+
+=== erasure
+
+ [1/2] 001-shl-bin
+ 001-shl-bin	compile	0.60 0.61 0.60 0.62 0.61 -- avg = 0.608, sd = 8.0e-3
+ 001-shl-bin	run	1.98 1.97 1.98 1.97 2.00 -- avg = 1.98, sd = 1.2e-2
+ [2/2] 002-add-bins
+ 002-add-bins	compile	2.96 3.00 2.97 2.98 2.96 -- avg = 2.974, sd = 1.7e-2
+ 002-add-bins	run	4.17 3.87 4.14 3.89 3.91 -- avg = 3.996, sd = 0.146

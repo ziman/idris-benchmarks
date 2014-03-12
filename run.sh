@@ -16,7 +16,7 @@ bench() {
             | timeout $TIMEOUT   \
                 /usr/bin/time -a -o time.txt -f %U \
                 "$@" > /dev/null \
-            || echo "TIMEDOUT" >> time.txt
+            || echo "TIMEOUT" >> time.txt
     done
     
     echo -e "$prog\t$label\t$(tr '\n' ' ' < time.txt)-- $(runhaskell stats.hs < time.txt)"
