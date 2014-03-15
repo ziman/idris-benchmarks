@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TIMEOUT="10s"
+TIMEOUT="30s"
 RUNS=5
 
 bench() {
@@ -12,7 +12,7 @@ bench() {
     >time.txt
     for run in $(seq $RUNS); do
         rm -f *.ibc
-        cat ${prog}-input.txt 2>/dev/null \
+        cat ${prog}.txt 2>/dev/null \
             | timeout $TIMEOUT   \
                 /usr/bin/time -a -o time.txt -f %U \
                 "$@" > /dev/null \
