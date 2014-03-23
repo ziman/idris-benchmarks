@@ -16,6 +16,8 @@ Everything is in seconds.
 003-palindrome  run     TIMEOUT TIMEOUT TIMEOUT TIMEOUT TIMEOUT -- 
 ```
 
+`TIMEOUT` = 30 seconds or more
+
 ### erasure
 
 ```
