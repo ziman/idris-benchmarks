@@ -22,8 +22,7 @@ build    (S Z)  (x :: xs) (y :: ys) = one x
 build (S (S n)) (x :: xs) (y :: ys) = two x (build n xs ys) y
 build    (S n)        []        []  =  nil
 
-eq : (xs : List a) -> index (length xs) (fromList xs) (reverse $ fromList xs) = xs
-eq xs = believe_me ()
+postulate eq : (xs : List a) -> index (length xs) (fromList xs) (reverse $ fromList xs) = xs
 
 toU : (xs : List a) -> U xs
 toU xs = replace (eq xs) $ build (length xs) (fromList xs) (reverse $ fromList xs)
