@@ -1,5 +1,7 @@
 module Main
 
+%default total
+
 data Bin : Nat -> Type where
     N : Bin Z
     I : Bin n -> Bin (1 + n + n)
@@ -21,6 +23,12 @@ fmt  N     = ""
 fmt (I bs) = "1" ++ fmt bs
 fmt (O bs) = "0" ++ fmt bs
 
+read : Integer -> List Char -> Integer
+read acc       []  = acc
+read acc (c :: cs) = read (cast (ord c - ord '0') + 10 * acc) cs
+
+partial
 main : IO ()
 main = do
-    putStrLn . fmt $ pow 100000 (I N)
+    input <- map trim getLine
+    putStrLn . fmt $ pow (fromInteger . read 0 . unpack $ input) (I N)
