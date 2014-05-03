@@ -13,8 +13,8 @@ BENCHMARKS = [
         'mk_output': lambda w: '1' + '0'*w,
     }),
     ('003-palindrome', {
-        'input_sizes': [1, 4, 16, 64, 256],
-        'mk_input': lambda k: 'a' + 'b' * (k*1024) + 'a',
+        'input_sizes': [1, 32, 64, 96, 128],
+        'mk_input': lambda k: 'a' + 'b'*(k*1024) + 'a',
         'mk_output': lambda k: 'yes',
     }),
 ]
