@@ -11,6 +11,9 @@ import math
 # configuration
 from benchdata import *
 
+class IncorrectOutput(Exception):
+    pass
+
 def delete(fnames):
     for fname in fnames:
         try:
@@ -18,40 +21,46 @@ def delete(fnames):
         except OSError:
             pass  # file does not exist, ignore
 
-def exec_timeout(command, timeout_sec, stdin=None):
+def exec_timeout(command, timeout_sec, stdin=None, expected_stdout=None):
     """ Return the process's runtime in seconds or None if timed out. """
 
-    with open('/dev/null', 'wb') as dev_null:
-        sub = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=dev_null, stderr=dev_null)
-        thread = threading.Thread(target=lambda: sub.communicate(input=stdin))
-        thread.start()
+    sub = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout = [None]
+    def work():
+        stdout[0] = sub.communicate(input=stdin)[0]
 
-        t1 = datetime.datetime.now()
-        thread.join(timeout_sec)
-        t2 = datetime.datetime.now()
+    thread = threading.Thread(target=work)
+    thread.start()
 
-        if thread.is_alive():
-            sub.terminate()
-            thread.join()
-            return None # timed out
-        else:
-            return (t2-t1).total_seconds()
+    t1 = datetime.datetime.now()
+    thread.join(timeout_sec)
+    t2 = datetime.datetime.now()
+
+    if thread.is_alive():
+        sub.terminate()
+        thread.join()
+        return None # timed out
+    else:
+        if expected_stdout is not None and stdout[0] != expected_stdout:
+            raise IncorrectOutput(stdout[0])
+
+        return (t2-t1).total_seconds()
 
 def prn(s):
     sys.stdout.write(s)
     sys.stdout.flush()
 
-def exec_multi(attempts, command, timeout_sec, cleanup=None, stdin=None):
+def exec_multi(attempts, command, timeout_sec, cleanup=None, stdin=None, expected_stdout=None):
     ts = []
     for i in xrange(attempts):
+        prn('%d ' % (i+1))
+
         if cleanup:
             cleanup()
 
-        t = exec_timeout(command, timeout_sec, stdin=stdin)
+        t = exec_timeout(command, timeout_sec, stdin=stdin, expected_stdout=None)
         if t is not None:
             ts.append(t)
-
-        prn('%d ' % (i+1))
 
     N = len(ts)
     mean = sum(ts) / N if N else None
@@ -87,7 +96,8 @@ def run_benchmark(bname, binfo):
         t_run = exec_multi(N_runs,
             ['./' + bname],
             timeout_sec=TIMEOUT_sec,
-            stdin=binfo['mkinput'](isize),
+            stdin=binfo['mk_input'](isize),
+            expected_stdout=binfo['mk_output'](isize),
         )
         t_runtime.append((isize, t_run))
         print ''
