@@ -139,5 +139,5 @@ print 'Generating report...'
 with open('report.tpl', 'r') as f:
     template = jinja2.Template(f.read())
 
-with open('report.html', 'w') as f:
+with open('report/index.html', 'w') as f:
     f.write(template.render(results=results))
