@@ -57,13 +57,21 @@ def exec_multi(attempts, command, timeout_sec, cleanup=None):
     }
 
 def run_benchmark(bname, binfo):
+    def cleanup():
+        delete(
+            fn for fn in os.listdir('.')
+            if fn.endswith('.ibc') or fn == bname
+        )
+
     t_comp = exec_multi(N_runs,
         ['idris', '--warnreach', bname + '.idr', '-o', bname],
         timeout_sec=30,
-        cleanup=lambda: delete(fn for fn in os.listdir('.') if fn.endswith('.ibc') or fn == bname),
+        cleanup=cleanup,
     )
 
     t_runtime = []
+
+    cleanup()
 
     return {
         'compilation': t_comp,
