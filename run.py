@@ -7,6 +7,8 @@ import subprocess
 import threading
 import datetime
 import math
+import jinja2
+import json
 
 # configuration
 from benchdata import *
@@ -114,9 +116,28 @@ def run_benchmark(bname, binfo):
         'runtime': t_runtime,
     }
 
-# run the benchmarks
-results = {}
-for bname, binfo in BENCHMARKS:
-    results[bname] = run_benchmark(bname, binfo)
+# --------------------------------------------------
 
-print results
+USE_CACHED = True
+
+if USE_CACHED:
+    with open('results.json', 'r') as f:
+        results = json.loads(f.read())
+else:
+    # run the benchmarks
+    results = []
+    for bname, binfo in BENCHMARKS:
+        result = run_benchmark(bname, binfo)
+        results.append((bname, result))
+
+    # save results
+    with open('results.json', 'w') as f:
+        f.write(json.dumps(results))
+
+print 'Generating report...'
+
+with open('report.tpl', 'r') as f:
+    template = jinja2.Template(f.read())
+
+with open('report.html', 'w') as f:
+    f.write(template.render(results=results))
