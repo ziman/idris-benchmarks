@@ -80,7 +80,7 @@ def exec_multi(attempts, command, timeout_sec, cleanup=None, stdin=None, expecte
         'attempts': attempts,  # including timeouts
     }
 
-def run_benchmark(bname, binfo):
+def run_benchmark(bname, binfo, iters):
     print 'Running benchmark: %s' % bname
 
     def cleanup():
@@ -90,7 +90,7 @@ def run_benchmark(bname, binfo):
         )
 
     prn('  compiling: ')
-    t_comp = exec_multi(N_runs,
+    t_comp = exec_multi(iters,
         ['idris', '--warnreach', bname + '.idr', '-o', bname],
         timeout_sec=TIMEOUT_sec,
         cleanup=cleanup,
@@ -100,7 +100,7 @@ def run_benchmark(bname, binfo):
     t_runtime = []
     for isize in binfo['input_sizes']:
         prn('  input size %d: ' % isize)
-        t_run = exec_multi(N_runs,
+        t_run = exec_multi(iters,
             ['./' + bname],
             timeout_sec=TIMEOUT_sec,
             stdin=binfo['mk_input'](isize),
@@ -120,7 +120,7 @@ def main(args):
     # run the benchmarks
     results = []
     for bname, binfo in BENCHMARKS:
-        result = run_benchmark(bname, binfo)
+        result = run_benchmark(bname, binfo, args.iters)
         results.append((bname, result))
 
     # save results
