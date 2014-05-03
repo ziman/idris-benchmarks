@@ -1,6 +1,5 @@
 module Main
 
-import Parity
 import System
 
 data Bit : Nat -> Type where
@@ -21,43 +20,6 @@ instance Show (Binary w k) where
      show zero = ""
      show (bin # bit) = show bin ++ show bit
 
-
-
-
-
-
-
-
-pad : Binary w n -> Binary (S w) n
-pad zero = zero # b0 
-pad (num # x) = pad num # x
-
-natToBin : (width : Nat) -> (n : Nat) ->
-           Maybe (Binary width n)
-natToBin Z (S k) = Nothing
-natToBin Z Z = Just zero
-natToBin (S w) Z = do x <- natToBin w Z
-                      Just (pad x)
-natToBin (S w) (S k) with (parity k)
-  natToBin (S w) (S (plus j j)) | even {n = _}
-    = do jbin <- natToBin w j
-         let value = jbin # b1
-         ?ntbEven
-  natToBin (S w) (S (S (plus j j))) | odd {n = _}
-    = do jbin <- natToBin w (S j)
-         let value = jbin # b0
-         ?ntbOdd
-
-
-
-
-
-
-
-
-
-
-
 pattern syntax bitpair [x] [y] = (_ ** (_ ** (x, y, _)))
 term    syntax bitpair [x] [y] = (_ ** (_ ** (x, y, refl)))
 
@@ -77,23 +39,6 @@ adc zero        zero        carry ?= zero # carry
 adc (numx # bx) (numy # by) carry
    ?= let (bitpair carry0 lsb) = addBit bx by carry in 
           adc numx numy carry0 # lsb
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ------------
 
@@ -132,32 +77,11 @@ main = do
     iters  <- readNum
     putStrLn . fmt $ work x y iters
   where
-    bin : (w : Nat) -> (x : Nat) -> Binary w x
-    bin w x = let Just y = natToBin w x in y
-
     work : (x, y : Bin w) -> (iters : Nat) -> Bin (S w)
     work (MkBin x) (MkBin y) iters = MkBin $ iter iters (adc x y b0) x y
     
     
 ---------- Proofs ----------
-
-Main.ntbOdd = proof {
-    intro w,j;
-    rewrite sym (plusZeroRightNeutral j);
-    rewrite plusSuccRightSucc j j;
-    intros;
-    refine Just;
-    trivial;
-}
-
-Main.ntbEven = proof {
-    compute;
-    intro w,j;
-    rewrite sym (plusZeroRightNeutral j);
-    intros;
-    refine Just;
-    trivial;
-}
 
 -- There is almost certainly an easier proof. I don't care, for now :)
 

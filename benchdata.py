@@ -9,7 +9,7 @@ BENCHMARKS = [
     }),
     ('002-add-bins', {
         'input_sizes': [1, 5, 9, 13, 17, 19],
-        'mk_input': lambda w: "%d\n%d\n%d\n" % (w, 2**(w-1) - 1, 2**(w-1)),
+        'mk_input': lambda w: "%d\n%d\n%d\n%d\n" % (w, 2**(w-1) - 1, 2**(w-1), 10000),
         'mk_output': lambda w: str(2**w - 1),
     }),
     ('003-palindrome', {

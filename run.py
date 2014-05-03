@@ -12,7 +12,12 @@ import math
 from benchdata import *
 
 class IncorrectOutput(Exception):
-    pass
+    def __init__(self, expected, actual):
+        self.expected = expected
+        self.actual = actual
+
+    def __str__(self):
+        return 'expected: "%s", actual: "%s"' % (self.expected, self.actual)
 
 def delete(fnames):
     for fname in fnames:
@@ -27,7 +32,7 @@ def exec_timeout(command, timeout_sec, stdin=None, expected_stdout=None):
     sub = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout = [None]
     def work():
-        stdout[0] = sub.communicate(input=stdin)[0]
+        stdout[0] = sub.communicate(input=stdin)[0].strip()
 
     thread = threading.Thread(target=work)
     thread.start()
@@ -41,8 +46,8 @@ def exec_timeout(command, timeout_sec, stdin=None, expected_stdout=None):
         thread.join()
         return None # timed out
     else:
-        if expected_stdout is not None and stdout[0] != expected_stdout:
-            raise IncorrectOutput(stdout[0])
+        if (expected_stdout is not None) and (stdout[0] != expected_stdout):
+            raise IncorrectOutput(expected_stdout, stdout[0])
 
         return (t2-t1).total_seconds()
 
@@ -58,7 +63,7 @@ def exec_multi(attempts, command, timeout_sec, cleanup=None, stdin=None, expecte
         if cleanup:
             cleanup()
 
-        t = exec_timeout(command, timeout_sec, stdin=stdin, expected_stdout=None)
+        t = exec_timeout(command, timeout_sec, stdin=stdin, expected_stdout=expected_stdout)
         if t is not None:
             ts.append(t)
 
