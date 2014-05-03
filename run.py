@@ -7,6 +7,9 @@ import threading
 import datetime
 import math
 
+# configuration
+from benchdata import *
+
 def delete(fnames):
     for fname in fnames:
         try:
@@ -42,9 +45,6 @@ def exec_multi(attempts, command, timeout_sec, cleanup=None):
         if t is not None:
             ts.append(t)
 
-        if cleanup:
-            cleanup()
-
     N = len(ts)
     mean = sum(ts) / N
     ssq = sum((t - mean)**2 for t in ts)
@@ -56,27 +56,23 @@ def exec_multi(attempts, command, timeout_sec, cleanup=None):
         'attempts': attempts,  # including timeouts
     }
 
-def run_benchmark(bmark):
-    t_comp = exec_multi(5,
-        ['idris', '--warnreach', bmark + '.idr', '-o', bmark],
+def run_benchmark(bname, binfo):
+    t_comp = exec_multi(N_runs,
+        ['idris', '--warnreach', bname + '.idr', '-o', bname],
         timeout_sec=30,
-        cleanup=lambda: delete(fn for fn in os.listdir('.') if fn.endswith('.ibc') or bmark == fn),
+        cleanup=lambda: delete(fn for fn in os.listdir('.') if fn.endswith('.ibc') or fn == bname),
     )
+
+    t_runtime = []
 
     return {
         'compilation': t_comp,
+        'runtime': t_runtime,
     }
-
-# find all benchmarks
-bmarks = [
-    match.group(1) for match in [
-        re.match(r'([0-9]{3}-.*)\.idr', fname) for fname in os.listdir('.')
-    ] if match
-]
 
 # run the benchmarks
 results = {}
-for bmark in bmarks:
-    results[bmark] = run_benchmark(bmark)
+for bname, binfo in BENCHMARKS:
+    results[bname] = run_benchmark(bname, binfo)
 
 print results
