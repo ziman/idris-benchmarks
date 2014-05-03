@@ -23,12 +23,8 @@ fmt  N     = ""
 fmt (I bs) = "1" ++ fmt bs
 fmt (O bs) = "0" ++ fmt bs
 
-read : Integer -> List Char -> Integer
-read acc       []  = acc
-read acc (c :: cs) = read (cast (ord c - ord '0') + 10 * acc) cs
-
 partial
 main : IO ()
 main = do
-    input <- map trim getLine
-    putStrLn . fmt $ pow (fromInteger . read 0 . unpack $ input) (I N)
+    input <- map (Classes.fromInteger . cast . trim) getLine
+    putStrLn . fmt $ pow input (I N)
