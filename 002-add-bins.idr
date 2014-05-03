@@ -49,7 +49,7 @@ readNum : IO Nat
 readNum = map (fromInteger . cast) getLine
 
 readBin : (w : Nat) -> IO (Bin w)
-readBin w = map (parse w . unpack) getLine
+readBin w = map (parse w . reverse . unpack . trim) getLine
   where
     pad : (ww : Nat) -> Binary ww Z
     pad  Z     = zero
@@ -69,11 +69,6 @@ iter (S n)   _ x y = iter n (adc x y b0) x y
 fmt : Bin w -> String
 fmt (MkBin x) = show x
 
--- The w-bit inputs must have *exactly* w digits.
--- Otherwise, they will be left(!)-aligned.
---
--- For example, with w=6, "101" is parsed as "101000".
---
 main : IO ()
 main = do
     w <- readNum
