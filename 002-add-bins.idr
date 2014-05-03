@@ -20,6 +20,9 @@ instance Show (Binary w k) where
      show zero = ""
      show (bin # bit) = show bin ++ show bit
 
+data Bin : Nat -> Type where
+    MkBin : Binary w x -> Bin w
+
 pattern syntax bitpair [x] [y] = (_ ** (_ ** (x, y, _)))
 term    syntax bitpair [x] [y] = (_ ** (_ ** (x, y, refl)))
 
@@ -45,9 +48,6 @@ adc (numx # bx) (numy # by) carry
 readNum : IO Nat
 readNum = map (fromInteger . cast) getLine
 
-data Bin : Nat -> Type where
-    MkBin : Binary w x -> Bin w
-
 readBin : (w : Nat) -> IO (Bin w)
 readBin w = map (parse w . unpack) getLine
   where
@@ -69,6 +69,11 @@ iter (S n)   _ x y = iter n (adc x y b0) x y
 fmt : Bin w -> String
 fmt (MkBin x) = show x
 
+-- The w-bit inputs must have *exactly* w digits.
+-- Otherwise, they will be left(!)-aligned.
+--
+-- For example, with w=6, "101" is parsed as "101000".
+--
 main : IO ()
 main = do
     w <- readNum
