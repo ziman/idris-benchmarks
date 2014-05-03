@@ -9,8 +9,8 @@ BENCHMARKS = [
     }),
     ('002-add-bins', {
         'input_sizes': [1, 5, 9, 13, 17, 19],
-        'mk_input': lambda w: "%d\n%d\n%d\n%d\n" % (w, 2**(w-1) - 1, 2**(w-1), 10000),
-        'mk_output': lambda w: str(2**w - 1),
+        'mk_input': lambda w: "%d\n%s\n%s\n%d\n" % (w, '1' + '0'*(w-1), '1' + '0'*(w-1), 1000*1000),
+        'mk_output': lambda w: '1' + '0'*w,
     }),
     ('003-palindrome', {
         'input_sizes': [],
