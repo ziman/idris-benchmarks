@@ -7,8 +7,8 @@ import subprocess
 import threading
 import datetime
 import math
-import jinja2
 import json
+import argparse
 
 # configuration
 from benchdata import *
@@ -116,14 +116,7 @@ def run_benchmark(bname, binfo):
         'runtime': t_runtime,
     }
 
-# --------------------------------------------------
-
-USE_CACHED = True
-
-if USE_CACHED:
-    with open('results.json', 'r') as f:
-        results = json.loads(f.read())
-else:
+def main(args):
     # run the benchmarks
     results = []
     for bname, binfo in BENCHMARKS:
@@ -131,13 +124,16 @@ else:
         results.append((bname, result))
 
     # save results
-    with open('results.json', 'w') as f:
+    with open(args.outfile, 'w') as f:
         f.write(json.dumps(results))
 
-print 'Generating report...'
-
-with open('report.tpl', 'r') as f:
-    template = jinja2.Template(f.read())
-
-with open('report/index.html', 'w') as f:
-    f.write(template.render(results=results))
+parser = argparse.ArgumentParser(description='Run benchmarks and save the results into a JSON file.')
+parser.add_argument('-o',
+        metavar='FILE', type=str, nargs=1, default='results.json',
+        dest='outfile', help='Where the results should be written [results.json]'
+)
+parser.add_argument('-i', '--iters',
+        metavar='N', type=int, nargs=1, default=10,
+        dest='iters', help='How many times every measurement should be repeated [10]'
+)
+main(parser.parse_args())
