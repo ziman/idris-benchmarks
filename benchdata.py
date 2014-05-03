@@ -1,4 +1,4 @@
-N_runs = 5
+N_runs = 2
 TIMEOUT_sec = 15
 
 BENCHMARKS = [
@@ -13,8 +13,8 @@ BENCHMARKS = [
         'mk_output': lambda w: '1' + '0'*w,
     }),
     ('003-palindrome', {
-        'input_sizes': [],
-        'mk_input': None,
-        'mk_output': None,
+        'input_sizes': [1, 4, 16, 64, 256],
+        'mk_input': lambda k: 'a' + 'b' * (k*1024) + 'a',
+        'mk_output': lambda k: 'yes',
     }),
 ]

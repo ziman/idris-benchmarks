@@ -58,14 +58,14 @@ def prn(s):
 def exec_multi(attempts, command, timeout_sec, cleanup=None, stdin=None, expected_stdout=None):
     ts = []
     for i in xrange(attempts):
-        prn('%d ' % (i+1))
-
         if cleanup:
             cleanup()
 
         t = exec_timeout(command, timeout_sec, stdin=stdin, expected_stdout=expected_stdout)
         if t is not None:
             ts.append(t)
+
+        prn('%d ' % (i+1))
 
     N = len(ts)
     mean = sum(ts) / N if N else None
