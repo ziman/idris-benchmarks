@@ -97,30 +97,47 @@ adc (numx # bx) (numy # by) carry
 
 ------------
 
-readNum : String -> IO Nat
-readNum what = do
-  putStr $ "Enter " ++ what ++ ": "
-  (fromInteger . cast) `map` getLine
+readNum : IO Nat
+readNum = map (fromInteger . cast) getLine
+
+data Bin : Nat -> Type where
+    MkBin : Binary w x -> Bin w
+
+readBin : (w : Nat) -> IO (Bin w)
+readBin w = map (parse w . unpack) getLine
+  where
+    pad : (ww : Nat) -> Binary ww Z
+    pad  Z     = zero
+    pad (S ww) = pad ww # b0
+
+    parse : (ww : Nat) -> List Char -> Bin ww
+    parse  Z     (_ :: _) = MkBin zero
+    parse  Z     []       = MkBin zero
+    parse (S ww) []       = MkBin (pad $ S ww)
+    parse (S ww) (c :: cs) with (parse ww cs)
+        | MkBin bs = if (c == '0') then MkBin (bs # b0) else MkBin (bs # b1)
 
 iter : (n : Nat) -> Binary (S w) (x + y) -> Binary w x -> Binary w y -> Binary (S w) (x + y)
 iter  Z    sum x y = sum
 iter (S n)   _ x y = iter n (adc x y b0) x y
 
+fmt : Bin w -> String
+fmt (MkBin x) = show x
+
 main : IO ()
 main = do
-    w <- readNum "width"
-    x <- readNum "x"
-    y <- readNum "y"
-    iters  <- readNum "iters"
-    print $ iter iters (adc (bin w x) (bin w y) b0) (bin w x) (bin w y)
+    w <- readNum
+    x <- readBin w
+    y <- readBin w
+    iters  <- readNum
+    putStrLn . fmt $ work x y iters
   where
     bin : (w : Nat) -> (x : Nat) -> Binary w x
     bin w x = let Just y = natToBin w x in y
 
-
-
-
-
+    work : (x, y : Bin w) -> (iters : Nat) -> Bin (S w)
+    work (MkBin x) (MkBin y) iters = MkBin $ iter iters (adc x y b0) x y
+    
     
 ---------- Proofs ----------
 
