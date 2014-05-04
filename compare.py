@@ -47,7 +47,7 @@ def main(args):
         with open('tmp/%s-runtime.gpl' % bname, 'w') as f:
             f.write("""
                 set title '{0}';
-                set ylabel 'Time (seconds)';
+                set ylabel 'Runtime (seconds)';
                 set xlabel 'Data size';
                 set term pngcairo size 640,480 fontscale 0.75 background '#ffffff';
                 set output '{1}';
