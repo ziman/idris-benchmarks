@@ -20,6 +20,8 @@
     <body>
         <h1>{{title}}</h1>
 
+        <p>Plots show mean &plusmn; 3 sample standard deviations. Error bars are often invisible.</p>
+
         {% for name, bench in benchmarks %}
             <h2>{{name}}</h2>
         

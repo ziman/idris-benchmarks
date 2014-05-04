@@ -61,14 +61,14 @@ def main(args):
                 c = compilation[bname][iname]
                 comp_gpl.write('%d %g %g\n' % (i, c['mean'], c['stdev']))
 
-            cplots.append('"tmp/%s-%s-compilation-gpl.txt" with boxerrorbars title "%s" fill pattern 10 lw 2'
+            cplots.append('"tmp/%s-%s-compilation-gpl.txt" using 1:2:(3*$3) with boxerrorbars title "%s" fill pattern 10 lw 2'
                 % (bname, iname, iname))
 
             with open('tmp/%s-%s-runtime-gpl.txt' % (bname, iname), 'w') as f:
                 for isize, stat in runtime[bname][iname]:
                     f.write('%g %g %g\n' % (isize, stat['mean'], stat['stdev']))
 
-            rplots.append('"tmp/%s-%s-runtime-gpl.txt" with errorbars title "" lw 1' % (bname, iname))
+            rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2:(3*$3) with errorbars title "" lw 1' % (bname, iname))
             rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2 with lines lw 1 title "%s"' % (bname, iname, iname))
 
         with open('tmp/%s-compilation.gpl' % bname, 'w') as f:
@@ -128,7 +128,7 @@ def main(args):
 
     # generate HTML
     with open('report.tpl', 'r') as f:
-        template = jinja2.Template(f.read())
+        template = jinja2.Template(f.read().decode('utf8'))
 
     with open('report/index.html', 'w') as f:
         f.write(template.render(
@@ -136,7 +136,7 @@ def main(args):
             compilation=compilation,
             runtime=runtime,
             title=args.title,
-        ))
+        ).encode('utf8'))
 
 parser = argparse.ArgumentParser(description='Generate an HTML report from benchmark JSONs.')
 parser.add_argument(
