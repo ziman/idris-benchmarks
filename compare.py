@@ -30,6 +30,23 @@ def main(args):
             runtime[bname][iname] = bench['runtime']
 
     for bname in bnames:
+        # data for R
+        with open('tmp/%s-runtime.txt' % bname, 'w') as f:
+            f.write('"version" "dsize" "runtime"\n')
+
+            for iname in inames:
+                for isize, stat in runtime[bname][iname]:
+                    for t in stat['ts']:
+                        f.write('"%s" %f %f\n' % (iname, isize, t))
+
+        with open('tmp/%s-compilation.txt' % bname, 'w') as f:
+            f.write('"version" "time"\n')
+
+            for iname in inames:
+                for t in compilation[bname][iname]['ts']:
+                    f.write('"%s" %f\n' % (iname, t))
+
+        # data for Gnuplot
         plots = []
 
         for i, iname in enumerate(inames):
