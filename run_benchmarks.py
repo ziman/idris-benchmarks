@@ -78,6 +78,7 @@ def exec_multi(attempts, command, timeout_sec, cleanup=None, stdin=None, expecte
         'stdev': math.sqrt(ssq / (N-1)) if N != 1 else None,
         'N': N,
         'attempts': attempts,  # including timeouts
+        'ts': ts,
     }
 
 def run_benchmark(bname, binfo, iters):
@@ -91,7 +92,7 @@ def run_benchmark(bname, binfo, iters):
 
     prn('  compiling: ')
     t_comp = exec_multi(iters,
-        ['idris', '--warnreach', bname + '.idr', '-o', bname],
+        ['idris', bname + '.idr', '-o', bname],
         timeout_sec=TIMEOUT_sec,
         cleanup=cleanup,
     )
@@ -124,7 +125,7 @@ def main(args):
         results.append((bname, result))
 
     # save results
-    with open(args.outfile, 'w') as f:
+    with open(args.outfile[0], 'w') as f:
         f.write(json.dumps(results))
 
 parser = argparse.ArgumentParser(description='Run benchmarks and save the results into a JSON file.')
