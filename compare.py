@@ -72,11 +72,11 @@ def main(args):
             rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2 with lines lw 1 title "%s"' % (bname, iname, iname))
 
         with open('tmp/%s-compilation.gpl' % bname, 'w') as f:
-            f.write("""
-                set title '{0}';
+            stuff = """
+                set title '{0}: compilation';
                 set ylabel 'Compilation time (seconds)';
                 set xlabel 'Version';
-                set term pngcairo size 640,480 fontscale 0.75 background '#ffffff';
+                set term pngcairo size 300,300 fontscale 0.75 background '#ffffff';
                 set output '{1}';
                 set xtics nomirror ({2});
                 set xrange [-1:{3}];
@@ -91,30 +91,60 @@ def main(args):
                 len(inames),
                 1.2 * max(c['mean'] + c['stdev'] for c in (d for d in compilation[bname].itervalues())),
                 ', '.join(cplots),
-            ) + '\n')
+            ) + '\n'
+
+            f.write(stuff)
 
         with open('tmp/%s-runtime.gpl' % bname, 'w') as f:
-            f.write("""
-                set title '{0}';
+            stuff = """
+                set title '{0}: runtime';
                 set ylabel 'Runtime (seconds)';
                 set xlabel 'Data size ({1})';
                 set term pngcairo size 640,480 fontscale 0.75 background '#ffffff';
                 set output '{2}';
+                # set log x;
+                # set log y;
                 set grid;
                 plot \\\n  {3};
             """.format(
                 bname,
                 units[bname],
                 'report/%s-runtime.png' % bname,
-                ',\\\n  '.join(cplots),
-            ) + '\n')
+                ',\\\n  '.join(rplots),
+            ) + '\n'
+
+            f.write(stuff)
+
+        with open('tmp/%s-runtime-loglog.gpl' % bname, 'w') as f:
+            f.write('set log x; set log y;'
+                + stuff
+                    .replace('runtime.png', 'runtime-loglog.png')
+                    .replace(': runtime', ': runtime (log-log)')
+            )
 
         subprocess.check_call(['gnuplot', 'tmp/%s-compilation.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime.gpl' % bname])
+        subprocess.check_call(['gnuplot', 'tmp/%s-runtime-loglog.gpl' % bname])
+
+    # generate HTML
+    with open('report.tpl', 'r') as f:
+        template = jinja2.Template(f.read())
+
+    with open('report/index.html', 'w') as f:
+        f.write(template.render(
+            benchmarks=BENCHMARKS,
+            compilation=compilation,
+            runtime=runtime,
+            title=args.title,
+        ))
 
 parser = argparse.ArgumentParser(description='Generate an HTML report from benchmark JSONs.')
 parser.add_argument(
         metavar='JSON', nargs='+', dest='inputs',
         help='Input JSON files.'
+)
+parser.add_argument('-t', '--title',
+        metavar='TITLE', default='Benchmark results',
+        help='The title.'
 )
 main(parser.parse_args())

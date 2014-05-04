@@ -1,30 +1,59 @@
 <html>
     <head>
-        <title>Benchmark results</title>
+        <title>{{title}}</title>
     </head>
-    <body>
-        <h1>Benchmark results</h1>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+        }
 
-        {% for name, bench in results %}
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            border-top: 1px dashed gray;
+            padding-top: 0.3em;
+        }
+    </style>
+    <body>
+        <h1>{{title}}</h1>
+
+        {% for name, bench in benchmarks %}
             <h2>{{name}}</h2>
+        
+            <h3>Compilation</h3>
+            <img src="{{name}}-compilation.png" />
 
             <h3>Runtime</h3>
-            <img src="{{name}}-runtime.png" /><br/>
-
+            <div>
+                <img src="{{name}}-runtime.png" />
+                <img src="{{name}}-runtime-loglog.png" />
+            </div>
+            
+            <!--
             <table>
                 <tr>
                     <td>Input size</td>
                     <td>Mean</td>
                     <td>Stdev</td>
                 </tr>
-                {% for size, stat in bench.runtime %}
+                {% for iname, istat in runtime[name].iteritems() %}
                 <tr>
-                    <td>{{size}}</td>
-                    <td>{{stat.mean}}</td>
-                    <td>{{stat.stdev}}</td>
-                </tr>
+                    <th colspan="3">{{iname}}</th>
+                <tr>
+    
+                    {% for size, stat in istat %}
+                    <tr>
+                        <td>{{size}}</td>
+                        <td>{{stat.mean}}</td>
+                        <td>{{stat.stdev}}</td>
+                    </tr>
+                    {% endfor %}
                 {% endfor %}
             </table>
+            -->
         {% endfor %}
     </body>
 </html>
