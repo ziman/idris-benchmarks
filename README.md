@@ -1,6 +1,8 @@
 ## Some benchmarks
 
-* HTML output with charts: http://ziman.functor.sk/report/
+* HTML output with charts:
+  * http://ziman.functor.sk/erasure-bm/
+  * http://ziman.functor.sk/erasure-bm-big/
 
 * Everything is in seconds.
 
