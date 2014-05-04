@@ -125,16 +125,16 @@ def main(args):
         results.append((bname, result))
 
     # save results
-    with open(args.outfile[0], 'w') as f:
-        f.write(json.dumps(results))
+    with open(args.outfile, 'w') as f:
+        f.write(json.dumps(results, indent=2))
 
 parser = argparse.ArgumentParser(description='Run benchmarks and save the results into a JSON file.')
 parser.add_argument('-o',
-        metavar='FILE', type=str, nargs=1, default='results.json',
+        metavar='FILE', type=str, default='results.json',
         dest='outfile', help='Where the results should be written [results.json]'
 )
 parser.add_argument('-i', '--iters',
-        metavar='N', type=int, nargs=1, default=10,
+        metavar='N', type=int, default=10,
         dest='iters', help='How many times every measurement should be repeated [10]'
 )
 main(parser.parse_args())
