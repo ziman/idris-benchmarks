@@ -1,5 +1,7 @@
 ## Some benchmarks
 
+* More benchmarks: http://ziman.functor.sk/report/
+
 * Everything is in seconds.
 
 * Build options: `-fgmp -fFFI`
