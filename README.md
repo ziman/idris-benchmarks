@@ -1,6 +1,6 @@
 ## Some benchmarks
 
-* More benchmarks: http://ziman.functor.sk/report/
+* HTML output with charts: http://ziman.functor.sk/report/
 
 * Everything is in seconds.
 
