@@ -1,6 +1,17 @@
 module Main
 
 import System
+import Data.Erased
+
+-- -- Pair types -- --
+
+data Exists' : {a : Type} -> (a -> Type) -> Type where
+  witness : .(x : a) -> (pf : b x) -> Exists' b
+
+data Subset : (a : Type) -> (b : a -> Type) -> Type where
+  element : (x : a) -> .(pf : b x) -> Subset a b
+
+-- -- Main program -- --
 
 data Bit : Nat -> Type where
      b0 : Bit 0
@@ -23,11 +34,13 @@ instance Show (Binary w k) where
 data Bin : Nat -> Type where
     MkBin : Binary w x -> Bin w
 
-pattern syntax bitpair [x] [y] = (_ ** (_ ** (x, y, _)))
-term    syntax bitpair [x] [y] = (_ ** (_ ** (x, y, refl)))
+pattern syntax bitpair [x] [y] = witness _ (witness _ (element (x, y) _))
+term    syntax bitpair [x] [y] = witness _ (witness _ (element (x, y) refl))
 
 addBit : Bit x -> Bit y -> Bit c -> 
-          (bx ** (by ** (Bit bx, Bit by, c + x + y = by + 2 * bx)))
+  Exists' (\bx => Exists' (\by =>
+    Subset (Bit bx, Bit by) (\_=>
+      c + x + y = by + 2*bx)))
 addBit b0 b0 b0 = bitpair b0 b0
 addBit b0 b0 b1 = bitpair b0 b1 
 addBit b0 b1 b0 = bitpair b0 b1
@@ -100,7 +113,7 @@ Main.adc_lemma_2 = proof {
     rewrite plusCommutative bit1 (plus v v);
     rewrite sym (plusAssociative c bit0 (plus bit1 (plus v v)));
     rewrite sym (plusAssociative (plus c bit0) bit1 (plus v v));
-    rewrite sym b;
+    rewrite sym pf;
     rewrite plusAssociative x1 (plus x x) (plus v v);
     rewrite plusAssociative x x (plus v v);
     rewrite sym (plusAssociative x v v);
