@@ -5,8 +5,8 @@ import Data.Erased
 
 -- -- Pair types -- --
 
-data Exists' : {a : Type} -> (a -> Type) -> Type where
-  witness : .(x : a) -> (pf : b x) -> Exists' b
+data ForSome : {a : Type} -> (a -> Type) -> Type where
+  witness : .(x : a) -> (pf : b x) -> ForSome b
 
 data Subset : (a : Type) -> (b : a -> Type) -> Type where
   element : (x : a) -> .(pf : b x) -> Subset a b
@@ -38,7 +38,7 @@ pattern syntax bitpair [x] [y] = witness _ (witness _ (element (x, y) _))
 term    syntax bitpair [x] [y] = witness _ (witness _ (element (x, y) refl))
 
 addBit : Bit x -> Bit y -> Bit c -> 
-  Exists' (\bx => Exists' (\by =>
+  ForSome (\bx => ForSome (\by =>
     Subset (Bit bx, Bit by) (\_=>
       c + x + y = by + 2*bx)))
 addBit b0 b0 b0 = bitpair b0 b0
