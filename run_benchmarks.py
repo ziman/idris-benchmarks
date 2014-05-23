@@ -92,7 +92,7 @@ def run_benchmark(bname, binfo, iters):
 
     prn('  compiling: ')
     t_comp = exec_multi(iters,
-        ['idris', bname + '.idr', '-o', bname],
+        ['idris', bname + '.idr', '-o', bname] + binfo['compiler_flags'],
         timeout_sec=TIMEOUT_sec,
         cleanup=cleanup,
     )

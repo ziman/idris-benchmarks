@@ -19,23 +19,27 @@ BENCHMARKS = [
         'mk_input': lambda x: "%s\n" % x,
         'mk_output': lambda x: '0' * x + '1',
         'units': 'left-shift amount, in bits',
+        'compiler_flags': [],
     }),
     ('002-add-bins', {
         'input_sizes': linspace(1, 200, GRAN),
         'mk_input': lambda w: "%d\n%s\n%s\n%d\n" % (w, '1' + '0'*(w-1), '1' + '0'*(w-1), 100*1000),
         'mk_output': lambda w: '1' + '0'*w,
         'units': 'word width, in bits',
+        'compiler_flags': [],
     }),
     ('003-palindrome', {
         'input_sizes': linspace(1, 128*1024, GRAN),
         'mk_input': lambda k: 'a' + 'b'*k + 'a',
         'mk_output': lambda k: 'yes',
         'units': 'input length, in characters',
+        'compiler_flags': [],
     }),
     ('004-effects', {
-        'input_sizes': linspace(16, 16, GRAN),
+        'input_sizes': linspace(10, 200*1000, GRAN),
         'mk_input': str,
-        'mk_output': lambda sz: str(sz),
-        'units': 'units TBD'
+        'mk_output': lambda sz: str(sum(xrange(1,sz+1))),
+        'units': 'units TBD',
+        'compiler_flags': ["-p", "effects"]
     }),
 ]
