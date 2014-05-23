@@ -20,7 +20,7 @@ build : (n : Nat) -> (xs : Vect k a) -> (ys : Vect k a) -> U (index n xs ys)
 build       Z         xs        ys  = nil
 build    (S Z)  (x :: xs) (y :: ys) = one x
 build (S (S n)) (x :: xs) (y :: ys) = two x (build n xs ys) y
-build    (S n)        []        []  =  nil
+build    (S n)        []        []  = nil
 
 postulate eq : (xs : List a) -> index (length xs) (fromList xs) (reverse $ fromList xs) = xs
 
