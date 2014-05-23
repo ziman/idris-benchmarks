@@ -32,4 +32,10 @@ BENCHMARKS = [
         'mk_output': lambda k: 'yes',
         'units': 'input length, in characters',
     }),
+    ('004-effects', {
+        'input_sizes': linspace(16, 16, GRAN),
+        'mk_input': str,
+        'mk_output': lambda sz: str(sz),
+        'units': 'units TBD'
+    }),
 ]
