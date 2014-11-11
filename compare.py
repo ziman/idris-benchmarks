@@ -68,7 +68,7 @@ def main(args):
                 for isize, stat in runtime[bname][iname]:
                     f.write('%g %g %g\n' % (isize, stat['mean'], stat['stdev']))
 
-            rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2:(3*$3) with errorbars title "" lw 1' % (bname, iname))
+            rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2:(3*$3) with errorbars title "" lw 1 ps 1.0' % (bname, iname))
             rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2 with lines lw 1 title "%s"' % (bname, iname, iname))
             # rplots.append('"" smooth sbezier t "bezier"')
 
@@ -123,9 +123,26 @@ def main(args):
                     .replace(': runtime', ': runtime (log-log)')
             )
 
+        with open('tmp/%s-runtime-latex.gpl' % bname, 'w') as f:
+            f.write(
+                stuff
+                    .replace('runtime.png', 'runtime.tex')
+                    .replace('set term pngcairo', 'set term epslatex;  # set term pngcairo')
+            )
+
+        with open('tmp/%s-runtime-eps.gpl' % bname, 'w') as f:
+            f.write(
+                stuff
+                    .replace('runtime.png', 'runtime-e.eps')
+                    .replace('ps 1.0', 'ps 0.3')
+                    .replace('set term pngcairo', 'set term eps monochrome dashed size 3.3in, 2.5in;  # set term pngcairo')
+            )
+
         subprocess.check_call(['gnuplot', 'tmp/%s-compilation.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime-loglog.gpl' % bname])
+        subprocess.check_call(['gnuplot', 'tmp/%s-runtime-latex.gpl' % bname])
+        subprocess.check_call(['gnuplot', 'tmp/%s-runtime-eps.gpl' % bname])
 
     # generate HTML
     with open('report.tpl', 'r') as f:
