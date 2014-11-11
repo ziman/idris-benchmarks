@@ -36,7 +36,7 @@ isPalinU : DecEq a => {xs : List a} -> U xs -> Maybe (Palindrome xs)
 isPalinU  nil    = Just $ p0
 isPalinU (one x) = Just $ p1 x
 isPalinU (two x u y) with (decEq x y)
-  isPalinU (two x u x) | Yes refl = p2 x `map` isPalinU u
+  isPalinU (two x u x) | Yes Refl = p2 x `map` isPalinU u
   isPalinU (two x u y) | No  neq  = Nothing
 
 isPalindrome : DecEq a => (xs : List a) -> Maybe (Palindrome xs)
