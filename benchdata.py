@@ -1,7 +1,7 @@
 import math
 
 TIMEOUT_sec = 20
-GRAN = 32
+GRAN = 8
 
 def flinspace(first, last, N):
     D = float(last-first) / (N-1)
@@ -31,5 +31,14 @@ BENCHMARKS = [
         'mk_input': lambda k: 'a' + 'b'*k + 'a',
         'mk_output': lambda k: 'yes',
         'units': 'input length, in characters',
+    }),
+]
+
+BENCHMARKS = [
+    ('004-bin-nat', {
+        'input_sizes': linspace(1, 10, GRAN),
+        'mk_input': lambda w: "%d\n%s\n%s\n%d\n" % (w, '1' + '0'*(w-1), '1' + '0'*(w-1), 100*1000),
+        'mk_output': lambda w: '1' + '0'*w,
+        'units': 'word width, in bits',
     }),
 ]
