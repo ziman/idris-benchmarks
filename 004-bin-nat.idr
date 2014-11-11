@@ -30,8 +30,8 @@ record Sum : N -> N -> N -> Type where
 
 instance Show (Bin w n) where
   show NN = ""
-  show (xs # I) = show xs ++ "I"
-  show (xs # O) = show xs ++ "O"
+  show (xs # I) = show xs ++ "1"
+  show (xs # O) = show xs ++ "0"
   
 -- No term/pattern syntax extensions needed!
 adb : Bit c -> Bit x -> Bit y -> Sum c x y
