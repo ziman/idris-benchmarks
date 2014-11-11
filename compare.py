@@ -68,8 +68,12 @@ def main(args):
                 for isize, stat in runtime[bname][iname]:
                     f.write('%g %g %g\n' % (isize, stat['mean'], stat['stdev']))
 
-            rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2:(3*$3) with errorbars title "" lw 1 ps 1.0' % (bname, iname))
-            rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2 with lines lw 1 title "%s"' % (bname, iname, iname))
+            rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2:(3*$3) with errorbars title "" lw 1 lc %d pt 7 ps 1.0'
+                    % (bname, iname, i+1)
+            )
+            rplots.append('"tmp/%s-%s-runtime-gpl.txt" using 1:2 with lines lw 1 lc %d title "%s"'
+                    % (bname, iname, i+1, iname)
+            )
             # rplots.append('"" smooth sbezier t "bezier"')
 
         with open('tmp/%s-compilation.gpl' % bname, 'w') as f:
@@ -128,7 +132,8 @@ def main(args):
                 stuff
                     .replace('runtime.png', 'runtime-e.eps')
                     .replace('ps 1.0', 'ps 0.3')
-                    .replace('set term pngcairo', 'set term eps monochrome dashed size 3.3in, 2.5in;  # set term pngcairo')
+                    .replace('set term pngcairo', 'set term eps size 3.3in, 2.5in;  # set term pngcairo')
+#                    .replace('set term pngcairo', 'set term eps monochrome dashed size 3.3in, 2.5in;  # set term pngcairo')
             )
 
         subprocess.check_call(['gnuplot', 'tmp/%s-compilation.gpl' % bname])
