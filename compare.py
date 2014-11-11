@@ -123,13 +123,6 @@ def main(args):
                     .replace(': runtime', ': runtime (log-log)')
             )
 
-        with open('tmp/%s-runtime-latex.gpl' % bname, 'w') as f:
-            f.write(
-                stuff
-                    .replace('runtime.png', 'runtime.tex')
-                    .replace('set term pngcairo', 'set term epslatex;  # set term pngcairo')
-            )
-
         with open('tmp/%s-runtime-eps.gpl' % bname, 'w') as f:
             f.write(
                 stuff
@@ -141,7 +134,6 @@ def main(args):
         subprocess.check_call(['gnuplot', 'tmp/%s-compilation.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime-loglog.gpl' % bname])
-        subprocess.check_call(['gnuplot', 'tmp/%s-runtime-latex.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime-eps.gpl' % bname])
 
     # generate HTML
