@@ -1,7 +1,7 @@
 import math
 
 TIMEOUT_sec = 40
-GRAN = 16
+GRAN = 20
 
 def flinspace(first, last, N):
     D = float(last-first) / (N-1)
@@ -13,7 +13,7 @@ def linspace(first, last, N):
 def logspace(first, last, N):
     return [int(round(math.exp(x))) for x in flinspace(math.log(first), math.log(last), N)]
 
-BENCHMARKS = [
+"""
     ('001-shl-bin', {
         'input_sizes': linspace(1, 128*1024, GRAN),
         'mk_input': lambda x: "%s\n" % x,
@@ -26,14 +26,19 @@ BENCHMARKS = [
         'mk_output': lambda w: '1' + '0'*w,
         'units': 'word width, in bits',
     }),
+"""
+
+BENCHMARKS = [
     ('003-palindrome', {
         'input_sizes': linspace(1, 128*1024, GRAN),
         'mk_input': lambda k: 'a' + 'b'*k + 'a',
         'mk_output': lambda k: 'yes',
+        'flags': [],  # ['--noerasure'],
         'units': 'input length, in characters',
     }),
 ]
 
+"""
 BENCHMARKS = [
     ('004-bin-nat', {
         'input_sizes': linspace(1, 128, GRAN),
@@ -43,3 +48,4 @@ BENCHMARKS = [
         'units': 'word width, in bits',
     }),
 ]
+"""

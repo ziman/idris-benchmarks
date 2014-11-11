@@ -100,6 +100,13 @@ def main(args):
 
             f.write(stuff)
 
+        with open('tmp/%s-compilation-eps.gpl' % bname, 'w') as f:
+            f.write(
+                stuff
+                    .replace('compilation.png', 'compilation.eps')
+                    .replace('set term pngcairo', 'set term eps size 3.3in, 2.5in;  # ')
+            )
+
         with open('tmp/%s-runtime.gpl' % bname, 'w') as f:
             stuff = """
                 set title '{0}: runtime';
@@ -132,11 +139,12 @@ def main(args):
                 stuff
                     .replace('runtime.png', 'runtime-e.eps')
                     .replace('ps 1.0', 'ps 0.3')
-                    .replace('set term pngcairo', 'set term eps size 3.3in, 2.5in;  # set term pngcairo')
-#                    .replace('set term pngcairo', 'set term eps monochrome dashed size 3.3in, 2.5in;  # set term pngcairo')
+                    .replace('set term pngcairo', 'set term eps size 3.3in, 2.5in;  # ')
+#                    .replace('set term pngcairo', 'set term eps monochrome dashed size 3.3in, 2.5in;  # ')
             )
 
         subprocess.check_call(['gnuplot', 'tmp/%s-compilation.gpl' % bname])
+        subprocess.check_call(['gnuplot', 'tmp/%s-compilation-eps.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime-loglog.gpl' % bname])
         subprocess.check_call(['gnuplot', 'tmp/%s-runtime-eps.gpl' % bname])
