@@ -58,3 +58,20 @@ BENCHMARKS = [
         'units': 'input length, in characters',
     }),
 ]
+
+BENCHMARKS = [
+    ('006-rle-l', {
+        'input_sizes': linspace(1, 64*1024, GRAN),
+        'mk_input': lambda k: 'a' * k,
+        'mk_output': lambda k: 'a' * k,
+        'flags': [], # ['--noerasure'],
+        'units': 'input length, in characters',
+    }),
+    ('007-rle-r', {
+        'input_sizes': linspace(1, 64*1024, GRAN),
+        'mk_input': lambda k: 'a' * k,
+        'mk_output': lambda k: 'a' * k,
+        'flags': [], # ['--noerasure'],
+        'units': 'input length, in characters',
+    }),
+]
