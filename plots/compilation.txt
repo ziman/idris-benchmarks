@@ -1,4 +1,0 @@
-1   bin-erased      2.19    0.04    2
-2   bin-unerased    2.41    0.05    1
-3   palin-erased    1.84    0.04    2
-4   palin-unerased  2.14    0.04    1
