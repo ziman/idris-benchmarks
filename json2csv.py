@@ -7,7 +7,7 @@ def main(args):
     with open(args.fname_in) as f:
         doc = json.load(f)
 
-    print('"program","treatment","stage","input_size","duration"')
+    print('"program","stage","input_size","duration"')
     for prog_name, data in doc:
         for t in data['compilation']['ts']:
             print('"%s","compilation",NA,%f' % (

@@ -1,4 +1,4 @@
-"program","treatment","stage","input_size","duration"
+"program","stage","input_size","duration"
 "001-shl-bin","compilation",NA,0.764601
 "001-shl-bin","compilation",NA,0.764696
 "001-shl-bin","compilation",NA,0.764718
